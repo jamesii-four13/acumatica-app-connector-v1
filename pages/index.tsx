@@ -6,7 +6,7 @@ import { useContext } from 'react';
 global.I18n = I18n;
 
 const Index = () => {
-  const { app, shop, locale } = useContext(GlobalContext);
+	const { app, shop, locale } = useContext(GlobalContext);
 
 	return (
 		<>

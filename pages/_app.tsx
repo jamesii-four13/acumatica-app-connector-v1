@@ -35,7 +35,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 			default: DefaultComponent
 		};
 
-    const SpecificLayout = components[app];
+		const SpecificLayout = components[app];
 		
 		return <SpecificLayout shop={shop} />;
 	}

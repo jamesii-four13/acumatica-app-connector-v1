@@ -80,10 +80,10 @@ async function callbackRoute(req: NextApiRequest, res: NextApiResponse, afterAut
 
 	try {
 		await Shopify.Auth.validateAuthCallback(
-      req,
-      res,
-      req.query
-    );
+			req,
+			res,
+			req.query
+		);
 
 		const currentSession = await Shopify.Utils.loadCurrentSession(req, res);
 

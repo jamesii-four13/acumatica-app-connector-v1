@@ -4,20 +4,20 @@ import { useContext } from "react";
 import { GlobalContext } from '../../context/app';
 
 const components = {
-  shopify: CardComponent,
-  bigcommerce: Panel,
+	shopify: CardComponent,
+	bigcommerce: Panel,
 };
 
 const Card = ({ children }) => {
-  const { app } = useContext(GlobalContext);
+	const { app } = useContext(GlobalContext);
 
-  const StyledComponent = components[app];
+	const StyledComponent = components[app];
 
-  return (
-    <>
-      <StyledComponent sectioned> {children} </StyledComponent>      
-    </>
-  );
+	return (
+		<>
+			<StyledComponent sectioned> {children} </StyledComponent>      
+		</>
+	);
 };
 
 export { Card };
