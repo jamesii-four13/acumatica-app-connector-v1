@@ -12,7 +12,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
 
 		await setSession(session);
 		
-		res.redirect(302, `/?context=${encodedContext}`);
+		res.redirect(302, `/?context=${encodedContext}&app=bigcommerce&shop=${session.context.replace('/', '-')}.mybigcommerce.com`);
 	} catch (error) {
 		const { message, response } = error;
 		res.status(response?.status || 500).json({ message });

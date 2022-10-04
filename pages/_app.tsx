@@ -4,17 +4,28 @@ import SessionProvider from '../context/session';
 import EmbeddedApp from "../components/shopify/EmbeddedApp";
 import { useEffect, useState } from 'react';
 import { GlobalContext } from '../context/app';
+import { I18n } from '../utils/I18n';
+import { GlobalStyles } from '@bigcommerce/big-design';
+
+enum AppTypeEnum {
+	shopify,
+	default,
+	bigcommerce
+}
+
+global.I18n = I18n;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-	const BigcommerceComponent = () => <SessionProvider><Component {...pageProps} /></SessionProvider>;
+	const BigcommerceComponent = () => <SessionProvider><GlobalStyles /><Component {...pageProps} /></SessionProvider>;
 	const ShopifyComponent = () => <EmbeddedApp><Component {...pageProps} /></EmbeddedApp>;
 	const DefaultComponent = () => <>Loading...</>;
 
-	const [app, setApp] = useState<string>();
+	const [app, setApp] = useState<keyof typeof AppTypeEnum>();
 	const [shop, setShop] = useState<string>();
 	const { query } = useRouter();
 
 	useEffect(() => {
+		console.log(query.shop, 'query.shop')
 		if (query.shop) {
 			if (query.shop.indexOf('bigcommerce') > -1) {
 				setApp('bigcommerce')
@@ -28,7 +39,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 		}
 	}, [query.shop]);
 
-	function SpecificComponent({ app = 'default'}) {
+	function SpecificComponent({ app = 'default'} : { app: keyof typeof AppTypeEnum }) {
 		const components = {
 			bigcommerce: BigcommerceComponent,
 			shopify: ShopifyComponent,
@@ -37,7 +48,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
 		const SpecificLayout = components[app];
 		
-		return <SpecificLayout shop={shop} />;
+		return <SpecificLayout />;
 	}
 
 	return (

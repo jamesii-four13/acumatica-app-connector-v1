@@ -7,15 +7,19 @@ const components = {
 	shopify: CardComponent,
 	bigcommerce: Panel,
 };
+interface CardProps {
+	children: React.ReactNode;
+	sectioned?: boolean;
+};
 
-const Card = ({ children }) => {
+const Card = ({ children, sectioned }: CardProps) => {
 	const { app } = useContext(GlobalContext);
 
 	const StyledComponent = components[app];
 
 	return (
 		<>
-			<StyledComponent sectioned> {children} </StyledComponent>      
+			<StyledComponent sectioned={sectioned}> {children} </StyledComponent>      
 		</>
 	);
 };

@@ -1,19 +1,33 @@
-import { I18n } from '../utils/I18n';
 import { GlobalContext } from '../context/app';
-import { Card } from '../components/global';
+import { Card, Box } from '../components/global';
 import { useContext } from 'react';
+import { useEffect, useState } from 'react';
 
-global.I18n = I18n;
+import MainScreen from "../components/screen/mainScreen";
 
 const Index = () => {
 	const { app, shop, locale } = useContext(GlobalContext);
 
+	const [disableBackButton, setDisableBackButton] = useState<boolean>(false);	
+	const [screen, setScreen] = useState<string[]>([]);
+	const [instances, setInstances] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+
+	const onCallbackMain = (answer: boolean) => {
+		if (answer) {
+			setScreen([...screen, 'new-instance']);
+		} else {
+			setScreen([...screen, 'lead-gen']);
+		}
+	};
+
 	return (
 		<>
 			<div style={{padding: '50px 100px'}}>
-				<Card>
-					{`APP: ${app} \n STORE: ${shop} \n STORE: ${locale}`}
-					<p>{I18n('mainScreenQuestion')}</p>
+				<Card sectioned>
+					<Box>
+					{instances.length <= 0 && !screen.length && <MainScreen isLoading={isLoading} onCallback={onCallbackMain} />}
+					</Box>
 				</Card>
 			</div>
 		</>

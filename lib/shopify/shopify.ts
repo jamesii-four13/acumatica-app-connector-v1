@@ -16,7 +16,7 @@ const context = {
 	API_SECRET_KEY: SHOPIFY_API_SECRET,
 	SCOPES: SHOPIFY_SCOPES.split(','),
 	HOST_NAME: `${HOST.replace(/https:\/\//, '')}`,
-	IS_EMBEDDED_APP: false,
+	IS_EMBEDDED_APP: true,
 	API_VERSION: ApiVersion.July22, // all supported versions are available, as well as "unstable" and "unversioned"
 	SESSION_STORAGE: NODE_ENV === 'production' ? new Shopify.Session.CustomSessionStorage(
 		sessionStorage.storeCallback,
@@ -27,19 +27,11 @@ const context = {
 
 Shopify.Context.initialize(context);
 
-Shopify.Webhooks.Registry.addHandler('APP_UNINSTALLED', {
-	path: '/api/webhooks/shopify',
-	webhookHandler: async (topic, shop, body) => {
-		await AppInstallations.delete(shop);
-		console.log('APP_UNINSTALLED handler was executed', topic, shop, body)
-	},
-});
-
 export default Shopify;
 
 export function ShopifyAuth(config: any) {
 	return (req: NextApiRequest, res: NextApiResponse) => {
-		const { shopify } = req.query;
+		const { uri } = req.query;
 		const { host } = req.headers;
 
 		// Provide HOST_NAME here just in case it was not provided by env variable
@@ -47,10 +39,12 @@ export function ShopifyAuth(config: any) {
 		// what domain your app is being hosted on
 		Shopify.Context.initialize({...context, HOST_NAME: host});
 
-		switch(shopify.join('/')) {
-			case 'shopify/login':
+		console.log('HEY HEY HEY 2', uri);
+
+		switch(uri.join('/')) {
+			case 'uri/login':
 				return loginRoute(req, res);
-			case 'shopify/callback':
+			case 'uri/callback':
 				return callbackRoute(req, res, config.afterAuth);
 		}
 	}
@@ -60,7 +54,7 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
 	try {
 		const { shop } = req.query;
 
-		const authRoute = await Shopify.Auth.beginAuth(req, res, shop.toString(), '/api/shopify/auth/shopify/callback', true);
+		const authRoute = await Shopify.Auth.beginAuth(req, res, shop.toString(), '/api/shopify/auth/uri/callback', true);
 
 		console.log("New OAuth process begining.")
 		res.redirect(authRoute)

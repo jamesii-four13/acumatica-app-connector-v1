@@ -13,16 +13,14 @@ export default function EmbeddedApp({children}) {
 	useEffect(() => {
 		const url = new URL(window.location.href)
 		const _host = url.searchParams.get('host');
-		const _shop = url.searchParams.get('shop');
 
 		// If host is not set, than the page is being loaded outside of App Bridge
 		// so we should proceed with starting OAuth
 		if (_host) {
 			setHost(_host);
 		} else {
-			window.location.pathname = `/api/shopify/auth/shopify/login?shop=${_shop}`;
+			window.location.pathname = '/api/shopify/auth/uri/login';
 		}
-		
 	}, [])
 
 	return <> {

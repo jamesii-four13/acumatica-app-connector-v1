@@ -1,11 +1,11 @@
-import { AppBridgeState, ClientApplication } from "@shopify/app-bridge";
-import { authenticatedFetch } from "@shopify/app-bridge-utils";
-import { Redirect } from "@shopify/app-bridge/actions";
+import { AppBridgeState, ClientApplication } from '@shopify/app-bridge';
+import { authenticatedFetch } from '@shopify/app-bridge-utils';
+import { Redirect } from '@shopify/app-bridge/actions';
 
-export function fetch(app:  ClientApplication<AppBridgeState>) {
+export function fetch(app: ClientApplication<AppBridgeState>) {
 	const fetchFunction = authenticatedFetch(app);
 	
-	return async (uri, options) => {
+	return async (uri: string, options: object) => {
 		const response = await fetchFunction(uri, options);
 
 		checkHeadersForReauthorization(response.headers, app);
@@ -14,16 +14,16 @@ export function fetch(app:  ClientApplication<AppBridgeState>) {
 	};
 }
 
-function checkHeadersForReauthorization(headers, app) {
-	if (headers.get("X-Shopify-API-Request-Failure-Reauthorize") === "1") {
+function checkHeadersForReauthorization(headers: any, app: ClientApplication<AppBridgeState>) {
+	if (headers.get('X-Shopify-API-Request-Failure-Reauthorize') === '1') {
 		const authUrlHeader =
-			headers.get("X-Shopify-API-Request-Failure-Reauthorize-Url") ||
-			`/api/shopify/auth`;
+			headers.get('X-Shopify-API-Request-Failure-Reauthorize-Url') ||
+			`/api/shopify/auth/uri`;
 
 		const redirect = Redirect.create(app);
 		redirect.dispatch(
 			Redirect.Action.APP,
-			authUrlHeader.startsWith("/")
+			authUrlHeader.startsWith('/')
 				? `https://${window.location.host}${authUrlHeader}`
 				: authUrlHeader
 		);
